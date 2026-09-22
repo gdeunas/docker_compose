@@ -1,9 +1,6 @@
-version: '3.13'
-
 services:
-  # Сервис базы данных
   db:
-    image: postgres:16
+    image: postgres:16-alpine
     container_name: drf_course_db
     environment:
       POSTGRES_DB: ${DB_NAME:-drf_project}
@@ -17,14 +14,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Брокер сообщений для Celery
   redis:
     image: redis:7-alpine
     container_name: drf_course_redis
     expose:
       - 6379
 
-  # Основное Django REST Framework приложение
   web:
     build: .
     container_name: drf_course_web
@@ -47,29 +42,10 @@ services:
       redis:
         condition: service_started
 
-  # Воркер Celery для фоновых задач (например, рассылки, проверки подписок)
   celery:
     build: .
     container_name: drf_course_celery
     command: celery -A config worker --loglevel=info
-    volumes:
-      - .:/code
-    environment:
-      - DB_HOST=db
-      - CELERY_BROKER_URL=redis://redis:6379/0
-    env_file:
-      - .env
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-
-  # Celery Beat для периодических задач (если применимо в ДЗ)
-  celery_beat:
-    build: .
-    container_name: drf_course_beat
-    command: celery -A config beat --loglevel=info
     volumes:
       - .:/code
     environment:
