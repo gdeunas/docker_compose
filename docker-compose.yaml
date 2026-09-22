@@ -1,6 +1,7 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:16
+    platform: linux/amd64
     container_name: drf_course_db
     environment:
       POSTGRES_DB: ${DB_NAME:-drf_project}
