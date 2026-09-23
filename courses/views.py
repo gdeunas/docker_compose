@@ -1,12 +1,10 @@
-from rest_framework import viewsets, generics
+from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from courses.models import Course, Lesson
-from courses.serializers import (
-    CourseSerializer,
-    LessonSerializer,
-    CourseDetailSerializer,
-)
+from courses.serializers import (CourseDetailSerializer, CourseSerializer,
+                                 LessonSerializer)
+
 from .permissions import IsModerator, IsOwner
 
 
